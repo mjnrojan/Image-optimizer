@@ -1,0 +1,26 @@
+{
+    "name": "image-optimizer",
+    "version": "1.0.0",
+    "description": "Standalone image optimization tool for converting JPG/PNG to WebP format",
+    "type": "module",
+    "main": "optimize-images.js",
+    "scripts": {
+        "optimize": "node optimize-images.js",
+        "optimize:custom": "node optimize-images.js"
+    },
+    "keywords": [
+        "image",
+        "optimization",
+        "webp",
+        "sharp",
+        "converter"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "sharp": "^0.34.5"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}
