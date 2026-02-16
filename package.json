@@ -1,26 +1,52 @@
 {
-    "name": "image-optimizer",
+    "name": "@mjnrojan/image-optimizer",
     "version": "1.0.0",
-    "description": "Standalone image optimization tool for converting JPG/PNG to WebP format",
+    "description": "A fast CLI tool to convert JPG/PNG/GIF images and videos to WebP or AVIF format using Sharp. Supports recursive scanning, animated content, lossless mode, and configurable quality.",
     "type": "module",
+    "bin": {
+        "image-optimizer": "./optimize-images.js"
+    },
     "main": "optimize-images.js",
     "scripts": {
+        "start": "node optimize-images.js",
         "optimize": "node optimize-images.js",
-        "optimize:custom": "node optimize-images.js"
+        "optimize-webp": "node optimize-images.js webp",
+        "optimize-avif": "node optimize-images.js avif",
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
         "image",
+        "video",
         "optimization",
         "webp",
+        "avif",
+        "gif",
         "sharp",
-        "converter"
+        "converter",
+        "cli",
+        "compress",
+        "optimize",
+        "lossless",
+        "animated"
     ],
-    "author": "",
+    "author": "mjnrojan",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mjnrojan/Image-optimizer.git"
+    },
+    "homepage": "https://github.com/mjnrojan/Image-optimizer#readme",
+    "bugs": {
+        "url": "https://github.com/mjnrojan/Image-optimizer/issues"
+    },
     "dependencies": {
         "sharp": "^0.34.5"
     },
     "engines": {
         "node": ">=18.0.0"
-    }
+    },
+    "files": [
+        "optimize-images.js",
+        "README.md"
+    ]
 }

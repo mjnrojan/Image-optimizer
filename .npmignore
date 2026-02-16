@@ -1,0 +1,24 @@
+# Test/demo assets
+src/
+
+# Documentation (keep README.md)
+UPDATE_SUMMARY.md
+
+# Environment files
+.env
+.env.example
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

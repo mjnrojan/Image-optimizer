@@ -1,118 +1,197 @@
-# Image Optimizer - Standalone Package
+# @mjnrojan/image-optimizer
 
-A lightweight, portable image optimization tool that converts JPG/PNG images to WebP format using Sharp. Perfect for web projects that need fast, modern image formats.
+[![npm version](https://img.shields.io/npm/v/@mjnrojan/image-optimizer.svg)](https://www.npmjs.com/package/@mjnrojan/image-optimizer)
+[![license](https://img.shields.io/npm/l/@mjnrojan/image-optimizer.svg)](https://github.com/mjnrojan/Image-optimizer/blob/main/LICENSE)
+[![node](https://img.shields.io/node/v/@mjnrojan/image-optimizer.svg)](https://nodejs.org)
 
-## 📋 Table of Contents
-
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Configuration](#configuration)
-- [Usage Examples](#usage-examples)
-- [How It Works](#how-it-works)
-- [Troubleshooting](#troubleshooting)
-- [Performance Tips](#performance-tips)
+A fast, lightweight CLI tool that converts **JPG / PNG / GIF** images and **MP4 / MOV / WEBM** videos to **WebP** or **AVIF** format using [Sharp](https://sharp.pixelplumbing.com/). Supports recursive directory scanning, animated content preservation, lossless mode, and configurable quality — perfect for optimizing assets in any web project.
 
 ---
 
 ## ✨ Features
 
-- **Recursive Scanning**: Automatically finds all images in subdirectories
-- **WebP Conversion**: Converts JPG/PNG to modern WebP format
-- **Smart Skipping**: Avoids re-converting already optimized images
-- **Configurable Quality**: Adjust compression vs quality trade-off
-- **Detailed Reporting**: Shows file-by-file progress and final statistics
-- **Environment Variables**: Easy configuration without code changes
-- **Zero Config**: Works out of the box with sensible defaults
-
----
-
-## 🔧 Requirements
-
-- **Node.js**: Version 18.0.0 or higher
-- **npm**: Comes with Node.js
-
-Check your versions:
-```bash
-node --version
-npm --version
-```
+- **WebP & AVIF output** — choose the modern format that fits your needs
+- **Recursive scanning** — automatically finds all media in subdirectories
+- **Animated content** — preserves animation in GIFs and videos
+- **Lossless mode** — `--lossless` flag for pixel-perfect conversions
+- **Specific file targeting** — pass individual file paths instead of a directory
+- **Smart skipping** — never re-converts files that already have an output version
+- **Configurable quality & effort** — tune compression via env vars or CLI
+- **Detailed reporting** — per-file progress + summary with total savings
+- **Zero config** — works out of the box with sensible defaults
 
 ---
 
 ## 📦 Installation
 
-### Step 1: Copy the Package
-
-Copy the entire `image-optimizer-package` folder to your project or any location.
-
-### Step 2: Install Dependencies
-
-Navigate to the package directory and install:
+### Global install (recommended)
 
 ```bash
-cd image-optimizer-package
-npm install
+npm install -g @mjnrojan/image-optimizer
 ```
 
-This will install Sharp (~30MB), the high-performance image processing library.
+After installing globally, the `image-optimizer` command is available everywhere:
+
+```bash
+image-optimizer webp
+image-optimizer avif --lossless
+```
+
+### Per-project install
+
+```bash
+npm install --save-dev @mjnrojan/image-optimizer
+```
+
+Then add scripts to your project's `package.json`:
+
+```json
+{
+  "scripts": {
+    "optimize:webp": "image-optimizer webp",
+    "optimize:avif": "image-optimizer avif"
+  }
+}
+```
+
+### Run without installing (npx)
+
+```bash
+npx @mjnrojan/image-optimizer webp
+npx @mjnrojan/image-optimizer avif --lossless
+```
 
 ---
 
 ## 🚀 Quick Start
 
-### Basic Usage (Default Settings)
+```bash
+# 1. Set the directory containing your images (optional — defaults to ./src/assets)
+export ASSETS_DIR=./public/images   # Linux / Mac
+$env:ASSETS_DIR="./public/images"   # Windows PowerShell
 
-1. **Place your images** in `../src/assets/images/` (relative to the script)
-2. **Run the optimizer**:
-   ```bash
-   npm run optimize
-   ```
+# 2. Convert to WebP
+image-optimizer webp
 
-That's it! The script will:
-- Scan for all `.jpg`, `.jpeg`, and `.png` files
-- Convert them to `.webp` format
-- Save them alongside the originals
-- Show you the space savings
+# 3. Or convert to AVIF
+image-optimizer avif
+```
 
-### Example Output
+### Target specific files
+
+```bash
+image-optimizer webp ./hero.jpg ./banner.png
+image-optimizer avif ./photos/team.jpg
+```
+
+### Lossless mode
+
+```bash
+image-optimizer webp --lossless
+image-optimizer avif -l
+```
+
+---
+
+## ⚙️ Configuration
+
+All settings can be controlled via **environment variables**. No code changes needed.
+
+| Variable | Default | Description |
+|---|---|---|
+| `ASSETS_DIR` | `./src/assets` (relative to CWD) | Directory to scan for media files |
+| `WEBP_QUALITY` | `80` | WebP quality (`0`–`100`) |
+| `WEBP_EFFORT` | `6` | WebP compression effort (`0`–`6`) |
+| `AVIF_QUALITY` | `75` | AVIF quality (`0`–`100`) |
+| `AVIF_EFFORT` | `6` | AVIF compression effort (`0`–`9`) |
+| `LOSSLESS` | `false` | Enable lossless mode (`true` / `false`) |
+
+### Quality guidelines
+
+| Range | Best for |
+|---|---|
+| `60`–`70` | Thumbnails, previews |
+| `75`–`85` | Standard web images (recommended) |
+| `90`–`100` | Hero images, photography |
+
+### Example: high-quality WebP
+
+```bash
+# Linux / Mac
+WEBP_QUALITY=95 WEBP_EFFORT=6 image-optimizer webp
+
+# Windows PowerShell
+$env:WEBP_QUALITY="95"; $env:WEBP_EFFORT="6"; image-optimizer webp
+```
+
+### Example: fast AVIF for development
+
+```bash
+AVIF_QUALITY=70 AVIF_EFFORT=2 image-optimizer avif
+```
+
+---
+
+## 📖 Supported Formats
+
+### Input
+
+| Type | Extensions |
+|---|---|
+| **Images** | `.jpg`, `.jpeg`, `.png`, `.gif` |
+| **Videos** | `.mp4`, `.mov`, `.webm` |
+
+### Output
+
+| Format | Pros |
+|---|---|
+| **WebP** | Fast encoding, great compression, 97 %+ browser support |
+| **AVIF** | Superior compression (~50 % smaller than JPEG), HDR support, 90 %+ browser support |
+
+---
+
+## 📋 Example Output
 
 ```
-🚀 Starting image optimization...
+🚀 Starting WEBP optimization...
 
 📋 Configuration:
 ============================================================
-Assets Directory: D:\your-project\src\assets\images
-Supported Formats: .jpg, .jpeg, .png
+Assets Directory: D:\my-project\src\assets
+Output Format: WEBP
+Supported Image Formats: .jpg, .jpeg, .png, .gif
+Supported Video Formats: .mp4, .mov, .webm
 WebP Quality: 80
 WebP Effort: 6
 ============================================================
 
-📁 Scanning directory: D:\your-project\src\assets\images
+📁 Scanning directory: D:\my-project\src\assets
 
-📸 Found 15 images to process
+📸 Found 18 files to process
 
-🔄 Converting: hero-image.jpg (1920x1080)
-  ✅ WebP: 145.23 KB (62.3% smaller)
+🔄 Converting image: hero-image.jpg (1920x1080)
+  ✅ WEBP: 145.23 KB (62.3% smaller)
 
-🔄 Converting: product-1.png (800x600)
-  ✅ WebP: 78.45 KB (71.2% smaller)
+🔄 Converting image: product-1.png (800x600)
+  ✅ WEBP: 78.45 KB (71.2% smaller)
+
+🔄 Converting GIF: animation.gif (400x300, 24 frames)
+  ✅ WEBP: 234.56 KB (58.7% smaller)
 
 ⏭️  Skipped (already exists): logo.jpg
 
 ============================================================
 📊 OPTIMIZATION SUMMARY
 ============================================================
-Total images found:     15
-Successfully converted: 12
+Total files found:      18
+Successfully converted: 15
 Skipped (existing):     2
 Errors:                 1
 
-Original total size:    4.52 MB
-WebP total size:        1.67 MB
+Original total size:    5.82 MB
+WEBP total size:        2.14 MB
 
-💾 WebP savings:        63.1% (2.85 MB)
+💾 WEBP savings:        63.2% (3.68 MB)
 ============================================================
 
 ✨ Optimization complete!
@@ -120,283 +199,100 @@ WebP total size:        1.67 MB
 
 ---
 
-## ⚙️ Configuration
-
-### Method 1: Environment Variables (Recommended)
-
-Create a `.env` file in the package directory or set variables in your terminal:
-
-```bash
-# .env file
-ASSETS_DIR=./my-images
-WEBP_QUALITY=85
-WEBP_EFFORT=4
-```
-
-Then run:
-```bash
-npm run optimize
-```
-
-### Method 2: Command Line
-
-**Windows (PowerShell):**
-```powershell
-$env:ASSETS_DIR="D:\my-project\images"; npm run optimize
-```
-
-**Linux/Mac:**
-```bash
-ASSETS_DIR=/path/to/images WEBP_QUALITY=90 npm run optimize
-```
-
-### Method 3: Edit the Script
-
-Open `optimize-images.js` and modify the `CONFIG` object:
-
-```javascript
-const CONFIG = {
-    ASSETS_DIR: path.join(__dirname, '../src/assets/images'),
-    SUPPORTED_FORMATS: ['.jpg', '.jpeg', '.png'],
-    WEBP_QUALITY: 80,  // Change this (0-100)
-    WEBP_EFFORT: 6,    // Change this (0-6)
-};
-```
-
-### Configuration Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `ASSETS_DIR` | `../src/assets/images` | Directory to scan for images |
-| `WEBP_QUALITY` | `80` | Output quality (0-100). Higher = better quality, larger file |
-| `WEBP_EFFORT` | `6` | Compression effort (0-6). Higher = slower, better compression |
-
-**Quality Guidelines:**
-- `60-70`: Acceptable for thumbnails
-- `75-85`: Good balance for most web images
-- `90-100`: High quality for hero images
-
----
-
-## 📖 Usage Examples
-
-### Example 1: Optimize a Specific Folder
-
-```bash
-# Windows
-$env:ASSETS_DIR="D:\my-project\public\images"; npm run optimize
-
-# Linux/Mac
-ASSETS_DIR=/home/user/project/public/images npm run optimize
-```
-
-### Example 2: High-Quality Conversion
-
-```bash
-# Windows
-$env:WEBP_QUALITY="95"; $env:WEBP_EFFORT="6"; npm run optimize
-
-# Linux/Mac
-WEBP_QUALITY=95 WEBP_EFFORT=6 npm run optimize
-```
-
-### Example 3: Fast Conversion (Lower Quality)
-
-```bash
-# Windows
-$env:WEBP_QUALITY="70"; $env:WEBP_EFFORT="2"; npm run optimize
-
-# Linux/Mac
-WEBP_QUALITY=70 WEBP_EFFORT=2 npm run optimize
-```
-
-### Example 4: Integrate into Your Project
-
-Add to your project's `package.json`:
-
-```json
-{
-  "scripts": {
-    "optimize-images": "node ./image-optimizer-package/optimize-images.js"
-  }
-}
-```
-
-Then run:
-```bash
-npm run optimize-images
-```
-
----
-
 ## 🔍 How It Works
 
-### Step-by-Step Process
+1. **Reads configuration** from environment variables (or uses defaults)
+2. **Scans the target directory** recursively for supported image and video files
+3. **Processes each file** sequentially using [Sharp](https://sharp.pixelplumbing.com/):
+   - Detects animated content (multi-frame GIFs, videos)
+   - Converts to the chosen output format with the configured quality / effort
+   - Preserves animation frames automatically
+4. **Skips files** that already have a converted version
+5. **Reports progress** per file and prints a summary with total size savings
 
-1. **Initialization**
-   - Reads configuration from environment variables or defaults
-   - Validates the target directory exists
-
-2. **Scanning**
-   - Recursively walks through all subdirectories
-   - Identifies files with `.jpg`, `.jpeg`, or `.png` extensions
-   - Builds a list of files to process
-
-3. **Conversion Loop**
-   - For each image:
-     - Checks if `.webp` version already exists (skips if yes)
-     - Loads the image using Sharp
-     - Reads metadata (dimensions, format)
-     - Converts to WebP with specified quality/effort
-     - Saves alongside the original with `.webp` extension
-     - Tracks statistics (file sizes, savings)
-
-4. **Reporting**
-   - Displays progress for each file
-   - Shows final summary with total savings
-
-### Technical Details
-
-**Sharp Library:**
-- Uses libvips (C library) for fast image processing
-- Supports SIMD instructions for parallel processing
-- Memory-efficient streaming architecture
-
-**WebP Format:**
-- Developed by Google for web use
-- Supports both lossy and lossless compression
-- Typically 25-35% smaller than JPEG at same quality
-- Supported by 97%+ of browsers (as of 2024)
-
-**File Naming:**
-- Original: `image.jpg` → Converted: `image.webp`
-- Originals are **never deleted** (safe operation)
+**File naming:** `photo.jpg` → `photo.webp` (or `photo.avif`). Originals are **never deleted**.
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Issue: "Directory not found"
+### "Directory not found"
 
-**Cause:** The `ASSETS_DIR` path is incorrect or doesn't exist.
+The `ASSETS_DIR` path doesn't exist. Make sure the directory is correct:
 
-**Solution:**
-1. Check the path is absolute or correctly relative
-2. Ensure the directory exists
-3. On Windows, use forward slashes or escaped backslashes:
-   ```javascript
-   "D:/project/images"  // ✅ Good
-   "D:\\project\\images" // ✅ Good
-   "D:\project\images"   // ❌ Bad (unescaped)
-   ```
+```bash
+# Use forward slashes or escaped backslashes on Windows
+ASSETS_DIR="D:/project/images"       # ✅
+ASSETS_DIR="D:\\project\\images"     # ✅
+ASSETS_DIR="D:\project\images"      # ❌ unescaped backslash
+```
 
-### Issue: "No images found"
+### "No files found"
 
-**Cause:** No `.jpg`, `.jpeg`, or `.png` files in the directory.
+Verify the directory contains files with supported extensions (`.jpg`, `.jpeg`, `.png`, `.gif`, `.mp4`, `.mov`, `.webm`).
 
-**Solution:**
-1. Verify images are in the correct directory
-2. Check file extensions are lowercase (or modify `SUPPORTED_FORMATS`)
-3. Ensure subdirectories contain the images
+### Sharp installation fails
 
-### Issue: Sharp installation fails
-
-**Cause:** Missing build tools or incompatible Node version.
-
-**Solution:**
-1. Update Node.js to v18 or higher
-2. On Windows, install Visual Studio Build Tools if needed
+1. Make sure you're running **Node.js ≥ 18**
+2. On Windows, install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) if needed
 3. Try: `npm install --platform=win32 --arch=x64 sharp`
 
-### Issue: "Error converting [file]"
+### "Error converting [file]"
 
-**Cause:** Corrupted image or unsupported format variant.
-
-**Solution:**
-1. Open the image in an image editor and re-save
-2. Check the file isn't corrupted
-3. The script will skip and continue with other images
+The file may be corrupted or an unsupported variant. Open it in an image editor and re-save, or check the file for corruption. The script will skip the file and continue processing the rest.
 
 ---
 
 ## ⚡ Performance Tips
 
-### 1. Batch Processing
-Process images in batches if you have thousands:
-```bash
-# Process only a subfolder
-ASSETS_DIR=./images/batch-1 npm run optimize
-ASSETS_DIR=./images/batch-2 npm run optimize
-```
+| Tip | Details |
+|---|---|
+| **Dev vs Prod effort** | Use `WEBP_EFFORT=2` during development for speed; `WEBP_EFFORT=6` for production builds |
+| **Batch by folder** | Split large asset sets into subdirectories and process in parallel terminals |
+| **AVIF trade-off** | AVIF produces smaller files but encodes slower — use WebP when speed matters |
 
-### 2. Quality vs Speed
-- Use `WEBP_EFFORT=2` for faster processing during development
-- Use `WEBP_EFFORT=6` for final production builds
+### CI / CD Integration
 
-### 3. Parallel Processing
-The script processes sequentially to avoid memory issues. For very large batches:
-- Split into multiple directories
-- Run multiple terminal instances in parallel
-
-### 4. CI/CD Integration
-Add to your build pipeline:
 ```yaml
-# GitHub Actions example
-- name: Optimize Images
-  run: |
-    cd image-optimizer-package
-    npm install
-    npm run optimize
+# GitHub Actions
+- name: Optimize images
+  run: npx @mjnrojan/image-optimizer webp
+  env:
+    ASSETS_DIR: ./public/images
+    WEBP_QUALITY: 85
 ```
 
 ---
 
-## 📁 Project Structure
+## 📁 What Gets Published
+
+Only the essentials are included in the npm package:
 
 ```
-image-optimizer-package/
-├── optimize-images.js    # Main script
-├── package.json          # Dependencies and scripts
-├── README.md            # This file
-└── node_modules/        # Created after npm install
-    └── sharp/           # Image processing library
+@mjnrojan/image-optimizer
+├── optimize-images.js   # CLI entry point
+├── package.json
+└── README.md
 ```
-
----
-
-## 🔄 Updating to a New Project
-
-1. **Copy the folder** to your new project
-2. **Update `ASSETS_DIR`** in the script or via environment variable
-3. **Run `npm install`**
-4. **Run `npm run optimize`**
-
-That's it! The package is completely self-contained.
 
 ---
 
 ## 📝 License
 
-MIT License - Feel free to use in any project.
+[MIT](https://github.com/mjnrojan/Image-optimizer/blob/main/LICENSE) — free to use in any project.
 
 ---
 
 ## 🤝 Contributing
 
-This is a standalone tool. Modify the script directly for your needs:
-- Add AVIF support
-- Add different quality presets
-- Add image resizing
-- Add watermarking
+Issues and pull requests are welcome at [github.com/mjnrojan/Image-optimizer](https://github.com/mjnrojan/Image-optimizer).
 
----
-
-## 📞 Support
-
-If you encounter issues:
-1. Check the [Troubleshooting](#troubleshooting) section
-2. Verify Node.js version: `node --version`
-3. Check Sharp documentation: https://sharp.pixelplumbing.com/
+Ideas for contributions:
+- Image resizing presets
+- Watermarking support
+- Custom output directories
+- Parallel processing
+- Progress bar
 
 ---
 
